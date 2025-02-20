@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block body %}
+<div class="relative flex flex-col items-center justify-center space-y-6 p-6 mt-12">
+    <!-- Heading -->
+    <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Partez à l'aventure à Lakaka Land</h2>
+    
+    <!-- Text Input Field -->
+    <b class="text-blue-500 dark:text-blue-400">Le monde génialissime de génialité et malicieusement malicieux</b>
+
+    <!-- Button Link -->
+    <div class="flex space-x-4">
+        <a href="{{ path('login') }}" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-blue-700 dark:hover:bg-blue-800 dark:focus:ring-blue-500 text-center">
+            Connexion
+        </a>
+    </div>
+
+    <style>
+        body {
+            background-image: url("{{ asset('images/Fond.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            animation: slideBackground 10s linear infinite;
+        }
+
+        /* The veil overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7); /* Dark grey with 40% opacity */
+            z-index: -1; /* Ensures it stays behind the content */
+        }
+
+        /* Animation to move the background */
+        @keyframes slideBackground {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 100% 0;
+            }
+        }
+    </style>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des clients{% endblock %}
+
+{% block body %}
+    <h1 class="text-2xl font-bold mb-6">Liste des clients</h1>
+
+    <div class="clients-section">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for client in clients %}
+                <div class="client-card border border-gray-300 rounded-xl p-4 shadow-md" id="client-{{ client.id }}">
+                    <div class="client-header flex items-center">
+                        <img src="{{ asset('/images/client-icon.png') }}" 
+                            alt="Client Icon" 
+                            class="w-12 h-12 rounded-full mr-4">
+                        <div class="client-info">
+                            <div class="client-name text-lg font-semibold">{{ client.firstname }} {{ client.lastname }}</div>
+                            <div class="client-email text-gray-600">{{ client.email }}</div>
+                        </div>
+                    </div>
+                    <div class="client-details text-sm text-gray-500 mt-2">
+                        <p><strong>Téléphone :</strong> {{ client.phonenumber ?: 'N/A' }}</p>
+                        <p><strong>Adresse :</strong> {{ client.adress }}</p>
+                        <p><strong>Créé le :</strong> {{ client.createdAt }}</p>
+                    </div>
+                    <button class="mt-4 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-300 delete-btn" 
+                            data-client-id="{{ client.id }}">
+                        Supprimer
+                    </button>
+                    <a href="{{ path('client_edit', {'id': client.id}) }}" class="mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300 block text-center">
+                        Modifier
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="relative flex flex-col items-center justify-center space-y-6 p-6 mt-12">
+        <div class="flex">
+            <a href="{{ path('clients_create') }}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300">
+                Ajouter un client
+            </a>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.delete-btn').on('click', function () {
+                var clientId = $(this).data('client-id');
+                var row = $('#client-' + clientId);
+
+                if (confirm('Êtes-vous sûr de vouloir supprimer ce client ?')) {
+                    $.ajax({
+                        url: '/delete-client/' + clientId,
+                        type: 'POST',
+                        success: function (response) {
+                            if (response.success) {
+                                row.remove();
+                                alert('Client supprimé avec succès');
+                            } else {
+                                alert('Erreur lors de la suppression');
+                            }
+                        },
+                        error: function () {
+                            alert('Erreur lors de la requête AJAX');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

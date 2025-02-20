@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Produits{% endblock %}
+
+{% block body %}
+    <h1 class="text-2xl font-bold mb-6">Liste des Produits</h1>
+
+    <!-- Sorting Buttons -->
+    <div class="mb-4 flex space-x-4">
+        <a href="{{ path('product_list', { sort: 'name', order: 'asc' }) }}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">Nom A-Z</a>
+        <a href="{{ path('product_list', { sort: 'name', order: 'desc' }) }}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">Nom Z-A</a>
+        <a href="{{ path('product_list', { sort: 'price', order: 'asc' }) }}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">Prix Croissant</a>
+        <a href="{{ path('product_list', { sort: 'price', order: 'desc' }) }}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">Prix Décroissant</a>
+    </div>
+
+    <div class="grid grid-cols-1 md-grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for product in products %}
+            <div class="product-card border border-gray-300 rounded-xl p-4 shadow-md flex flex-col justify-between" id="product-{{ product.id }}">
+                <div class="product-header flex flex-col items-center">
+                    {% if product.image %}
+                        <img src="{{ product.image }}" alt="{{ product.name }}" class="w-48 h-48 object-cover rounded-lg mb-4">
+                    {% else %}
+                        <img src="{{ asset('/images/default-product.png') }}" alt="Default Product" class="w-48 h-48 object-cover rounded-lg mb-4">
+                    {% endif %}
+                    <div class="product-info text-center">
+                        <div class="product-name text-lg font-semibold">{{ product.name }}</div>
+                        <div class="product-price text-gray-600">{{ product.price }} €</div>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2 flex-grow">{{ product.description }}</p>
+                
+                {% if is_granted('product_modify', product) or is_granted('product_delete', product) %}
+                    <div class="mt-4 flex justify-between">
+                        {% if is_granted('product_modify', product) %}
+                            <a href="{{ path('product_edit', {'id': product.id}) }}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">Modifier</a>
+                        {% endif %}
+                        {% if is_granted('product_delete', product) %}
+                            <button class="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg delete-btn" data-product-id="{{ product.id }}">Supprimer</button>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="relative flex flex-col items-center justify-center space-y-6 p-6 mt-12">
+        {% if is_granted('product_create') %}
+            <div class="flex">
+                <a href="{{ path('product_create') }}" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg">Ajouter un produit</a>
+            </div>
+        {% endif %}
+        <div class="mt-6">
+            <a href="{{ path('product_export_csv') }}" class="bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg">Exporter en CSV</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.delete-btn').on('click', function () {
+                var productId = $(this).data('product-id');
+                var row = $('#product-' + productId);
+
+                if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
+                    $.ajax({
+                        url: '/delete-product/' + productId,
+                        type: 'POST',
+                        success: function (response) {
+                            if (response.success) {
+                                row.remove();
+                                alert('Produit supprimé avec succès');
+                            } else {
+                                alert('Erreur lors de la suppression');
+                            }
+                        },
+                        error: function () {
+                            alert('Erreur lors de la requête AJAX');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{% endblock %}

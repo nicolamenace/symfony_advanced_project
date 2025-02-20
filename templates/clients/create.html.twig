@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Create Client{% endblock %}
+
+{% block body %}
+    <div class="max-w-3xl mx-auto mt-10 p-8 bg-white dark:bg-gray-800 shadow-lg rounded-2xl transition-all">
+        <h1 class="text-3xl font-semibold mb-6 text-gray-900 dark:text-white">Create a New Client</h1>
+
+        {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+        
+        <div>
+            {{ form_label(form.firstname, 'First Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300'}}) }}
+            {{ form_widget(form.firstname, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white'}}) }}
+            {{ form_errors(form.firstname) }}
+        </div>
+
+        <div>
+            {{ form_label(form.lastname, 'Last Name', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300'}}) }}
+            {{ form_widget(form.lastname, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white'}}) }}
+            {{ form_errors(form.lastname) }}
+        </div>
+
+        <div>
+            {{ form_label(form.email, 'Email', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300'}}) }}
+            {{ form_widget(form.email, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white'}}) }}
+            {{ form_errors(form.email) }}
+        </div>
+
+        <div>
+            {{ form_label(form.phonenumber, 'Phone Number', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300'}}) }}
+            {{ form_widget(form.phonenumber, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white'}}) }}
+            {{ form_errors(form.phonenumber) }}
+        </div>
+
+        <div>
+            {{ form_label(form.adress, 'Address', {'label_attr': {'class': 'block text-sm font-medium text-gray-700 dark:text-gray-300'}}) }}
+            {{ form_widget(form.adress, {'attr': {'class': 'mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-white'}}) }}
+            {{ form_errors(form.adress) }}
+        </div>
+
+        <div class="mt-4">
+            {{ form_widget(form.save, {'attr': {'class': 'w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:bg-indigo-700 dark:hover:bg-indigo-800 dark:focus:ring-indigo-500'}}) }}
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

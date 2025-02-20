@@ -1,17 +1,193 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    {% block stylesheets %}{% endblock %}
+    
+    {% block javascripts %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+        <script>
+    document.addEventListener("turbo:load", function () {
+    const menu = document.getElementById("menu");
+    const menuToggleBtn = document.getElementById("menu-toggle-btn");
+    const mainContent = document.getElementById("main-content");
+    const nightModeToggle = document.getElementById("night-mode-toggle");
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
+    // Initialize menu state from localStorage
+    if (localStorage.getItem("menuState") === "open") {
+        menu.classList.add("translate-x-0");
+        mainContent.classList.add("ml-64");
+    } else {
+        menu.classList.remove("translate-x-0");
+        mainContent.classList.remove("ml-64");
+    }
+
+    // Ensure event listener for the menu button is attached
+    if (menuToggleBtn) {
+        menuToggleBtn.removeEventListener("click", toggleMenu); // Remove any previous listeners to avoid duplicates
+        menuToggleBtn.addEventListener("click", toggleMenu); // Reattach the listener
+    }
+
+    function toggleMenu() {
+        const isMenuOpen = menu.classList.contains("translate-x-0");
+
+        // Toggle the menu state
+        menu.classList.toggle("translate-x-0");
+        mainContent.classList.toggle("ml-64");
+
+        // Store menu state in localStorage
+        localStorage.setItem("menuState", isMenuOpen ? "closed" : "open");
+    }
+
+    // Dark mode logic
+    if (localStorage.getItem('darkMode') === 'enabled') {
+        document.documentElement.classList.add('dark');
+        nightModeToggle.classList.add('bg-green-500');
+        const slider = nightModeToggle.querySelector('.slider');
+        slider.classList.add('translate-x-6');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+
+    // Night mode toggle logic
+    if (nightModeToggle) {
+        nightModeToggle.addEventListener("click", function () {
+            document.documentElement.classList.toggle("dark");
+            nightModeToggle.classList.toggle("bg-green-500");
+            const slider = nightModeToggle.querySelector(".slider");
+            slider.classList.toggle("translate-x-6");
+            if (document.documentElement.classList.contains('dark')) {
+                localStorage.setItem('darkMode', 'enabled');
+            } else {
+                localStorage.setItem('darkMode', 'disabled');
+            }
+        });
+    }
+});
+
+</script>
+
+    {% endblock %}
+</head>
+<body class="flex min-h-screen font-sans bg-white dark:bg-gray-800 dark:text-white">
+    <header class="fixed top-0 z-50 w-full bg-gray-800 text-white h-16 flex items-center px-4 justify-between">
+    <div class="flex items-center">
+        <button id="menu-toggle-btn" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75l9-7.5 9 7.5v10.5a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 20.25V9.75z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 22.5v-6h4.5v6" />
+            </svg>
+        </button>
+        <a href="{{ path('home') }}" class="ml-4 text-lg hover:underline" >Bienvenue à Lakaka Land</a>
+    </div>
+    {% if app.user %}
+        <a href="{{ path('profile') }}" class="text-lg hover:underline">{{ app.user.firstName }}</a>
+    {% else %}
+        <div class="flex space-x-4">
+            <a href="{{ path('login') }}" class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:bg-blue-700 dark:hover:bg-blue-800 dark:focus:ring-blue-500 text-center">
+                Connexion
+            </a>
+        </div>
+    {% endif %}
+</header>
+
+    <nav id="menu" class="fixed top-0 left-0 w-64 bg-gray-900 text-white h-full transform -translate-x-64 transition-transform duration-300 pt-16 flex flex-col justify-between">
+        <ul class="space-y-2">
+            <li class="px-4 py-2 hover:bg-gray-700 flex items-center">
+                <a href="{{ path('users') }}" class="flex items-center w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 7.5a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a8.25 8.25 0 0115 0" />
+                    </svg>
+                    Utilisateurs
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700 flex items-center">
+                <a href="{{ path('product_list') }}" class="flex items-center w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3h16.5l-.75 9.75H4.5L3.75 3zM8.25 20.25a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm7.5 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+                    </svg>
+                    Produits
+                </a>
+            </li>
+            <li class="px-4 py-2 hover:bg-gray-700 flex items-center">
+                <a href="{{ path('clients_list') }}" class="flex items-center w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8.25c-1.5 0-2.625-1.125-2.625-2.625S10.5 3 12 3s2.625 1.125 2.625 2.625S13.5 8.25 12 8.25zM5.25 20.25h13.5c.375 0 .75-.375.75-.75s-.375-.75-.75-.75H5.25c-.375 0-.75.375-.75.75s.375.75.75.75zm6.375-6a4.5 4.5 0 01-3.75-1.875C6.6 11.25 9.3 9.75 12 9.75s5.4 1.5 5.625 3.375A4.5 4.5 0 0111.625 14.25z" />
+                    </svg>
+                    Clients
+                </a>
+            </li>
+        </ul>
+        <div class="px-4 py-2 border-t border-gray-700 flex items-center justify-between">
+            <span class="flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15.75a3.75 3.75 0 110-7.5 3.75 3.75 0 010 7.5zM12 3v1.5m0 15V21m9-9h-1.5m-15 0H3m14.121-6.364l-1.061 1.061m-9.9 9.9l-1.061 1.061M20.485 12l-1.061 1.061m-14.364 0L3 12" />
+                </svg>
+                <span>Night Mode</span>
+            </span>
+            <button id="night-mode-toggle" class="relative w-12 h-6 bg-gray-400 rounded-full transition-colors">
+                <span class="slider absolute left-0 top-0 w-6 h-6 bg-white rounded-full transform transition-transform"></span>
+            </button>
+        </div>
+    </nav>
+
+    <main id="main-content" class="flex-1 ml-0 transition-all duration-300 pt-16 px-4">
+        <div class="fixed top-4 right-4 z-50 space-y-4">
+    {% for type, messages in app.flashes %}
+        {% set color = {
+            'success': 'bg-green-500 text-white',
+            'error': 'bg-red-500 text-white',
+            'warning': 'bg-yellow-500 text-black',
+            'info': 'bg-blue-500 text-white'
+        }[type]|default('bg-gray-500 text-white') %}
+        
+        {% for message in messages %}
+            <div class="flash-message px-4 py-2 rounded-lg shadow-lg {{ color }} animate-fade-in">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
+
+<style>
+    /* Fade-in animation */
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Fade-out animation */
+    @keyframes fade-out {
+        0% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fade-in 0.5s ease-in-out forwards;
+    }
+
+    /* Apply fade-out after 2 seconds */
+    .flash-message {
+        animation: fade-in 0.5s ease-in-out forwards, fade-out 0.5s ease-in-out 2s forwards;
+    }
+</style>
+
         {% block body %}{% endblock %}
-    </body>
+    </main>
+    
+</body>
 </html>

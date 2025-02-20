@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Client{% endblock %}
+
+{% block body %}
+<div class="container mx-auto mt-8 p-6 max-w-lg bg-white dark:bg-gray-800 shadow-lg rounded-xl">
+    <h1 class="text-3xl font-bold text-gray-700 dark:text-gray-200 mb-6 text-center">Edit Client</h1>
+
+    {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+        <div class="flex flex-col">
+            {{ form_label(form.firstname, 'First Name', {'label_attr': {'class': 'block text-gray-700 dark:text-gray-300 font-medium mb-2'}}) }}
+            {{ form_widget(form.firstname, {'attr': {'class': 'w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600'}}) }}
+        </div>
+
+        <div class="flex flex-col">
+            {{ form_label(form.lastname, 'Last Name', {'label_attr': {'class': 'block text-gray-700 dark:text-gray-300 font-medium mb-2'}}) }}
+            {{ form_widget(form.lastname, {'attr': {'class': 'w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600'}}) }}
+        </div>
+
+        <div class="flex flex-col">
+            {{ form_label(form.email, 'Email', {'label_attr': {'class': 'block text-gray-700 dark:text-gray-300 font-medium mb-2'}}) }}
+            {{ form_widget(form.email, {'attr': {'class': 'w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600'}}) }}
+        </div>
+
+        <div class="flex flex-col">
+            {{ form_label(form.phonenumber, 'Phone Number', {'label_attr': {'class': 'block text-gray-700 dark:text-gray-300 font-medium mb-2'}}) }}
+            {{ form_widget(form.phonenumber, {'attr': {'class': 'w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600'}}) }}
+        </div>
+
+        <div class="flex flex-col">
+            {{ form_label(form.adress, 'Address', {'label_attr': {'class': 'block text-gray-700 dark:text-gray-300 font-medium mb-2'}}) }}
+            {{ form_widget(form.adress, {'attr': {'class': 'w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 py-2 rounded-lg focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600'}}) }}
+        </div>
+
+        <div class="flex justify-center">
+            {{ form_widget(form.save, {'attr': {'class': 'bg-blue-500 dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 text-white py-2 px-4 rounded-lg focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-500'}}) }}
+        </div>
+    {{ form_end(form) }}
+
+    <div class="mt-4 text-center">
+        <a href="{{ path('clients_list') }}" class="text-blue-500 dark:text-blue-400 hover:underline">Back to Client List</a>
+    </div>
+</div>
+{% endblock %}
